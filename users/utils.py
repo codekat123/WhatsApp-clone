@@ -1,4 +1,3 @@
-# utils/verify_session.py
 import json
 import random
 import time
