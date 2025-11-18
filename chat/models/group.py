@@ -9,6 +9,8 @@ class ChatParticipant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chat_participations')
     is_admin = models.BooleanField(default=False)
     joined_at = models.DateTimeField(auto_now_add=True)
+    is_online = models.BooleanField()
+    last_seen = models.DateTimeField()
 
     class Meta:
         unique_together = ('chat', 'user')
