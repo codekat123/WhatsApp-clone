@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'chat',
     'real_time',
     'channels',
-    'notifications', 
 ]
 
 

@@ -18,7 +18,7 @@ class SendOTPView(APIView):
      permission_classes = (AllowAny,)
 
      def post(self,request):
-          serializer = SendOTPSerializer(request.data)
+          serializer = SendOTPSerializer(data=request.data)
           serializer.is_valid(raise_exception=True)
           phone_number = str(serializer.validated_data.get('phone_number'))
 
