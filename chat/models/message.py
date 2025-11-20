@@ -17,6 +17,17 @@ class Message(models.Model):
      created_at = models.DateTimeField(auto_now_add=True)
      status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="sent")
 
+
+     class Message(models.Model):
+         class Meta:
+             indexes = [
+                 models.Index(fields=["chat", "created_at"]),
+                 models.Index(fields=["sender"]),
+                 models.Index(fields=["status"]),
+             ]
+
+
+    
      def to_json(self):
          return {
              "id": self.id,
