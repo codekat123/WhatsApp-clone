@@ -27,7 +27,7 @@ def _phone_resend_key(phone: str) -> str:
     return f"verify_resend_lock:{phone}"
 
 def generate_otp() -> str:
-    return f"{random.randint(0, 999999):06d}"
+    return "000000" if settings.USE_FIXED_OTP else f"{random.randint(0, 999999):06d}"
 
 def create_session_for_phone(phone: str) -> dict:
 

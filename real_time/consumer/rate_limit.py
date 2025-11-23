@@ -1,15 +1,23 @@
 import time
+from collections import defaultdict
+from django.conf import settings
 
-MESSAGE_LIMIT = 5
-TIME_WINDOW = 3
-
-
-def allowed_to_send(msg_timestamps):
-    now = time.time()
-    msg_timestamps = [t for t in msg_timestamps if now - t < TIME_WINDOW]
-
-    if len(msg_timestamps) >= MESSAGE_LIMIT:
-        return False, msg_timestamps
-
-    msg_timestamps.append(now)
-    return True, msg_timestamps
+class RateLimiter:
+    def __init__(self, limit=10, window=60):
+        self.limit = limit  # messages
+        self.window = window  # seconds
+        self.user_timestamps = defaultdict(list)
+    
+    def check_rate_limit(self, user_id):
+        now = time.time()
+        timestamps = self.user_timestamps[user_id]
+        
+        
+        timestamps = [ts for ts in timestamps if now - ts < self.window]
+        self.user_timestamps[user_id] = timestamps
+        
+        if len(timestamps) >= self.limit:
+            return False
+        
+        self.user_timestamps[user_id].append(now)
+        return True

@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
+from cryptography.fernet import Fernet
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 import dotenv
@@ -29,6 +30,8 @@ INSTALLED_APPS = [
     'chat',
     'real_time',
     'channels',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 ]
 
 
@@ -68,7 +71,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME':os.getenv('DB_NAME'),
         'PASSWORD':os.getenv('DB_PASSWORD'),
-        'USER':os.getenv('DB_USER'),
         'USER':os.getenv('DB_USER'),
         'HOST':os.getenv('DB_HOST'),
         'PORT':os.getenv('DB_PORT'),
@@ -128,7 +130,15 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+
 }
+SPECTACULAR_SETTINGS = {
+    "TITLE": "WhatsApp Clone API",
+    "DESCRIPTION": "API documentation",
+    "VERSION": "1.0.0",
+}
+
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
@@ -162,3 +172,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+ENABLE_MESSAGE_ENCRYPTION = True
+USE_FIXED_OTP = True

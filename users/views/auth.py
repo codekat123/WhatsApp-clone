@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 
+
 def send_sms(phone: str, otp: str):
     """
     Replace with your SMS provider (Twilio, Vonage, etc).
@@ -15,9 +16,10 @@ def send_sms(phone: str, otp: str):
 
 
 class SendOTPView(APIView):
-     permission_classes = (AllowAny,)
+    permission_classes = (AllowAny,)
 
-     def post(self,request):
+
+    def post(self, request):
           serializer = SendOTPSerializer(data=request.data)
           serializer.is_valid(raise_exception=True)
           phone_number = str(serializer.validated_data.get('phone_number'))

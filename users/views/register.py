@@ -8,13 +8,15 @@ from ..serializers import VerifyOTPSerializer
 from ..utils import get_session, increment_attempts, clear_session, MAX_VERIFY_ATTEMPTS
 
 
+
 User = get_user_model()
 
 class RegisterAPIView(APIView):
-     permission_classes = (AllowAny,)
+    permission_classes = (AllowAny,)
 
-     def post(self,request):
-          serializer = VerifyOTPSerializer(request.data)
+
+    def post(self, request):
+          serializer = VerifyOTPSerializer(data=request.data)
           serializer.is_valid(raise_exception=True)
           session_id = serializer.validated_data['session_id']
           otp = serializer.validated_data['otp']

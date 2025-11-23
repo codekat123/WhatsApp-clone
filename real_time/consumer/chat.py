@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .rate_limit import allowed_to_send
+from .rate_limit import RateLimiter
 from . import db_helpers
 from .handlers import (
     handle_create_message,
@@ -19,8 +19,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     This consumer handles WebSocket connections for chat rooms and routes
     incoming messages to appropriate handler functions.
     """
-    
-    # Event type to handler mapping
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rate_limiter = RateLimiter(limit=15, window=60)
+        self.db = db_helpers  
+
     handlers = {
         "typing": handle_typing,
         "create_message": handle_create_message,
@@ -50,9 +53,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         self.room_group_name = f"chat_{self.chat_id}"
         self.user = user
-        self.msg_timestamps = []
-        self.db = db_helpers  
-        self.rate_limit = allowed_to_send
+        
 
         await db_helpers.set_user_presence(self.chat_id, user.id, True)
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)

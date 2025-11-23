@@ -1,7 +1,7 @@
-from ..db_helpers import get_unread_message
+from ..db_helpers import get_unread_messages
 
 async def handle_notifications(consumer, data, user):
-    unread = await get_unread_message(user.id)
+    unread = await get_unread_messages(user.id)
 
     await consumer.channel_layer.group_send(
         consumer.room_group_name,
