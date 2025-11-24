@@ -2,17 +2,23 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.db import models, transaction
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 from ..models import Chat, ChatParticipant, Message, Block
 from ..serializers import MessageSerializer
+from django.utils import timezone
 
 User = get_user_model()
 
 
 class PrivateChat(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, user_id):
         current_user = request.user
         receiver = get_object_or_404(User, id=user_id)
@@ -45,9 +51,10 @@ class PrivateChat(APIView):
                     .create(is_group=False, created_by=current_user)
                 )
                 ChatParticipant.objects.bulk_create([
-                    ChatParticipant(chat=chat, user=current_user),
-                    ChatParticipant(chat=chat, user=receiver)
+                    ChatParticipant(chat=chat, user=current_user, is_online=True, last_seen=timezone.now()),
+                    ChatParticipant(chat=chat, user=receiver, is_online=False, last_seen=timezone.now()),
                 ])
+
 
         
         messages = (

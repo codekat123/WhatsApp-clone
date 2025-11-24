@@ -1,3 +1,3 @@
 from .chat import PrivateChat
 from .group import *
-from .block import BlockUserAPIView,UnblockUserAPIView
+from .block import ToggleBlockAPIView

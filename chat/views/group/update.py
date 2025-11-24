@@ -3,12 +3,15 @@ from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from ...models import Chat, ChatParticipant
 from ...serializers import ChatSerializer
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class GroupUpdateAPIView(UpdateAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
     lookup_url_kwarg = "group_id"
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         group_id = self.kwargs.get(self.lookup_url_kwarg)

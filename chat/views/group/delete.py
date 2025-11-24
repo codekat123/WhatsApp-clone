@@ -2,9 +2,14 @@ from rest_framework.generics import DestroyAPIView
 from ...models import Chat, ChatParticipant
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 class GroupDestroyAPIView(DestroyAPIView):
     queryset = Chat.objects.all()
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         group_id = self.kwargs['group_id']

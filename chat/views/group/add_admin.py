@@ -6,10 +6,14 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from  ...serializers import GroupAddMemberSerializer
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 User = get_user_model()
 
 class GroupAddAdminAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = GroupAddMemberSerializer(data=request.data)

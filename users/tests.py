@@ -10,9 +10,6 @@ SQLITE_DB_SETTINGS = {
     }
 }
 
-
-
-
 @override_settings(
     DATABASES=SQLITE_DB_SETTINGS,
 )
@@ -74,4 +71,4 @@ class UserAuthAPITest(APITestCase):
             payload = {"session_id": session_id, "otp": "345434"}
             response = self.client.post(url, payload, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

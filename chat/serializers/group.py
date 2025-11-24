@@ -7,3 +7,4 @@ class GroupAddMemberSerializer(serializers.Serializer):
     group_id = serializers.IntegerField(min_value=1)
 
 
+

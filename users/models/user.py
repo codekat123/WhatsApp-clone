@@ -12,8 +12,11 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
+    objects = UserManager()
+
     USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = []
+
 
     def __str__(self):
         return str(self.phone_number)

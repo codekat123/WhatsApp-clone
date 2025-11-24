@@ -6,8 +6,8 @@ from .views import (
      GroupAddMemberAPIView,
      GroupAddAdminAPIView,
      PrivateChat,
-     BlockUserAPIView,
-     UnblockUserAPIView,
+     ToggleBlockAPIView,
+
 )
 
 
@@ -23,6 +23,5 @@ urlpatterns = [
 
     # Private Chats
     path('private/<int:user_id>/', PrivateChat.as_view(), name='private-chat'),
-    path('block/<int:user_id>/', BlockUserAPIView.as_view(), name='block'),
-    path('unblock/<int:user_id>/', UnblockUserAPIView.as_view(), name='unblock'),
+    path('block/<int:user_id>/', ToggleBlockAPIView.as_view(), name='block'),
 ]
