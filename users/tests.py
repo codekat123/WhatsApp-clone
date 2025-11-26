@@ -10,14 +10,21 @@ SQLITE_DB_SETTINGS = {
     }
 }
 
-@override_settings(
-    DATABASES=SQLITE_DB_SETTINGS,
-)
+CACHE_SETTINGS = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+
+@override_settings(DATABASES=SQLITE_DB_SETTINGS, CACHES=CACHE_SETTINGS)
 class UserAuthAPITest(APITestCase):
     
     def setUp(self):
         from django.core.cache import cache
         cache.clear()
+
 
     def send_otp(self):
         url = reverse("users:send-otp")
@@ -31,6 +38,9 @@ class UserAuthAPITest(APITestCase):
     def test_send_otp(self):
         session_id = self.send_otp()
         self.assertTrue(len(session_id) > 5)
+
+    def _auth(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access}') 
 
     def test_verify_correct_otp(self):
         session_id = self.send_otp()
@@ -72,3 +82,13 @@ class UserAuthAPITest(APITestCase):
             response = self.client.post(url, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_profile_update(self):
+        self._auth()
+        url = reverse("users:profile-update")
+        
+        response = self.client.patch(
+            url,
+            {"about":"I'm cool, no one knows that 😎"},
+            format="json"
+        )
+        self.assertEqual(response.status,status.HTTP_200_OK)

@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from  ...serializers import GroupAddMemberSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -19,7 +20,7 @@ class GroupAddMemberAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         group_id = serializer.validated_data["group_id"]
-        member_id = serializer.validated_data["member_id"]
+        member_id = serializer.validated_data["user_id"]
 
         group = get_object_or_404(Chat, id=group_id, is_group=True)
         member = get_object_or_404(User, id=member_id)
@@ -37,7 +38,8 @@ class GroupAddMemberAPIView(APIView):
 
         participant, created = ChatParticipant.objects.get_or_create(
             chat=group,
-            user=member
+            user=member,
+            defaults={"is_online": False,"last_seen":timezone.now()}
         )
 
         if not created:

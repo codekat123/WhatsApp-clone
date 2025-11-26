@@ -1,7 +1,7 @@
 from django.db import models 
-from django.contrib.auth import get_user_model
+from users.models import User
 from .chat import Chat
-User = get_user_model()
+
 
 
 class ChatParticipant(models.Model):

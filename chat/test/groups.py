@@ -58,6 +58,7 @@ class GroupAPITest(APITestCase):
         self.assertEqual(create_res.status_code, status.HTTP_201_CREATED)
 
         self.group_id = create_res.data['id']
+        self.user = User.objects.create(phone_number="0110982734",is_active=True)
 
 
 
@@ -71,3 +72,21 @@ class GroupAPITest(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
 
+    def test_add_member(self):
+        url = reverse("chat:group-add-member")
+        response = self.client.post(
+            url,
+            {'group_id':self.group_id,'user_id':self.user.id},
+            format='json'
+        )
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+    
+    def test_add_admin(self):
+        url = reverse("chat:group-add-admin")
+        response = self.client.post(
+            url,
+            {"group_id":self.group_id,"user_id":self.user.id},
+            format='json'
+        )
+        print(response.data)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)

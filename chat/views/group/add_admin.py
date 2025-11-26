@@ -19,7 +19,7 @@ class GroupAddAdminAPIView(APIView):
         serializer = GroupAddMemberSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        member_id = serializer.validated_data['member_id']
+        member_id = serializer.validated_data['user_id']
         group_id = serializer.validated_data['group_id']
 
         group = get_object_or_404(Chat, id=group_id, is_group=True)

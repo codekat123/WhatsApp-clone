@@ -35,7 +35,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         """Handle new WebSocket connection."""
-        user = self.scope["user"]
+        user = self.scope['user']
         if not user.is_authenticated:
             return await self.close()
 

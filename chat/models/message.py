@@ -1,12 +1,12 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from users.models import User 
 from chat.utils import EncryptionService
 from django.conf import settings
 import json
 import logging
 
 
-User = get_user_model()
+
 logger = logging.getLogger(__name__)
 
 
