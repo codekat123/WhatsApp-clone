@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from django.core.files.images import get_image_dimensions
 from PIL import Image
-from ..models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:

@@ -17,6 +17,7 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 
+ENV DJANGO_SETTINGS_MODULE=src.settings
 
 
 
