@@ -1,3 +1,3 @@
-from .chat import PrivateChat
+from .private_chat import PrivateChat , ChatListPerUser
 from .group import *
 from .block import ToggleBlockAPIView

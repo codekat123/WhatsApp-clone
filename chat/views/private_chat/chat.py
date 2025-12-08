@@ -8,8 +8,8 @@ from django.db import models, transaction
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Count
-from ..models import Chat, ChatParticipant, Message, Block
-from ..serializers import MessageSerializer
+from ...models import Chat, ChatParticipant, Message, Block
+from ...serializers import MessageSerializer
 from django.utils import timezone
 
 User = get_user_model()
@@ -64,4 +64,7 @@ class PrivateChat(APIView):
         )
 
         serializer = MessageSerializer(messages, many=True)
-        return Response({"messages": serializer.data}, status=status.HTTP_200_OK)
+        return Response({
+        "messages": serializer.data,
+        "chat_id":chat.id
+        }, status=status.HTTP_200_OK)

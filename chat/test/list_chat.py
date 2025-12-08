@@ -14,7 +14,7 @@ SQLITE_DB_SETTINGS = {
 }
 
 @override_settings(DATABASES=SQLITE_DB_SETTINGS)
-class PrivateChatAPITest(APITestCase):
+class ChatListAPITest(APITestCase):
 
     def setUp(self):
         send_otp_url = reverse("users:send-otp")
@@ -43,20 +43,10 @@ class PrivateChatAPITest(APITestCase):
     def _auth(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access}')
 
-    def test_get_private_chat(self):
+    def test_get_list_chat(self):
         self._auth()
 
-        url_private_chat = reverse("chat:private-chat", kwargs={'user_id': self.user.id})
+        url = reverse("chat:chat-list")
 
-        response = self.client.get(url_private_chat)  
-        print(response.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('messages', response.data)
-
-    def test_block(self):
-          self._auth()
-          block_url = reverse("chat:block",kwargs={'user_id':self.user.id})
-
-          reponse = self.client.post(block_url)
-
-          self.assertEqual(reponse.status_code,201)
+        response = self.client.get(url)
+        self.assertEqual(status.HTTP_200_OK,response.status_code)
