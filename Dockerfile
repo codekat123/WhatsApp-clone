@@ -22,8 +22,6 @@ COPY . /app/
 
 ENV DJANGO_SETTINGS_MODULE=src.settings
 
-RUN python manage.py collectstatic --noinput
-
 EXPOSE 8000
 
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "src.asgi:application"]
