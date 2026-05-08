@@ -11,7 +11,6 @@ env:
 
 jobs:
 
-
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -22,12 +21,31 @@ jobs:
         ports:
           - 6379:6379
 
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
-      SECRET_KEY: "test-secret-key-for-ci"
+      SECRET_KEY: "vZ7Kx2mP9qLwR4nJdY8uA3sT6hF1eB5cG0iN-XvQpWoMkEjHyUzCtDrSbIlOf"
       DEBUG: "True"
       USE_FIXED_OTP: "True"
       ENABLE_MESSAGE_ENCRYPTION: "False"
       REDIS_URL: "redis://localhost:6379/0"
+      DB_NAME: "test_db"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_HOST: "localhost"
+      DB_PORT: "5432"
 
     steps:
       - name: Checkout code
@@ -45,12 +63,11 @@ jobs:
       - name: Run tests
         run: python manage.py test
 
-
   build:
     name: Build & Push Image
     runs-on: ubuntu-latest
-    needs: test 
-    if: github.event_name == 'push' 
+    needs: test  
+    if: github.event_name == 'push'  
 
     steps:
       - name: Checkout code
