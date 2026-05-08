@@ -1,0 +1,108 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  DOCKER_IMAGE: ahmed036/whatsapp-clone
+
+jobs:
+
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    env:
+      SECRET_KEY: "test-secret-key-for-ci"
+      DEBUG: "True"
+      USE_FIXED_OTP: "True"
+      ENABLE_MESSAGE_ENCRYPTION: "False"
+      REDIS_URL: "redis://localhost:6379/0"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: python manage.py test
+
+
+  build:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    needs: test 
+    if: github.event_name == 'push' 
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:latest
+            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+
+
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build  
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Pull the latest image
+            docker pull ahmed036/whatsapp-clone:latest
+
+            # Go to app folder
+            cd ~/app
+
+            # Copy docker-compose file if not exists
+            if [ ! -f docker-compose.yml ]; then
+              echo "docker-compose.yml not found!"
+              exit 1
+            fi
+
+            # Stop old containers and start new ones
+            docker-compose down
+            docker-compose up -d
+
+            # Clean up old unused images
+            docker image prune -f
