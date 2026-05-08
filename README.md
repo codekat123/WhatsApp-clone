@@ -2,6 +2,19 @@
 
 A real-time chat application that mimics core WhatsApp features, built with Django, Django REST Framework, and WebSockets.
 
+
+---
+## 🌐 Live Deployment
+
+The API is deployed on an AWS EC2 instance and accessible over HTTPS:
+
+* **Base URL:** https://whats-clone-ahmed-gaber.duckdns.org/
+* **API Docs (Swagger):** https://whats-clone-ahmed-gaber.duckdns.org/api/docs/
+
+The application is running behind **Nginx** as a reverse proxy and served using **Gunicorn**, with HTTPS enabled via **Let's Encrypt**.
+
+---
+
 ## 🚀 Features
 
 - **User Authentication**: Secure signup and login with phone number verification
